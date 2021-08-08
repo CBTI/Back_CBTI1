@@ -96,28 +96,73 @@ def login(request):
         return render(request, 'login.html')
 
     elif request.method == 'POST':
-        test_data = json.loads(request.body)
-        username = test_data['username']
-        password = test_data['password']
-
-        # 유효성 처리
+        data = json.loads(request.body)
+        id = data['id']
+        password = data['password']
         res_data = {}
-        if not (username and password):
-            res_data['error'] = " 모든 부분을 입력해주세요"
-        else:
-            # 기존 db의 모델과 같은 값을 가져온다.
-
-            cbtiapp2_model = CBTIapp2_model.objects.get(username=username)
-
+        # 기존 db의 모델과 같은 값을 가져온다.
+        query = f'SELECT PASSWORD FROM TB_CBTI_USER WHERE ID = \'{id}\''
+        try:
+            c.execute(query)
             # password가 맞는지 확인
-            if check_password(password, cbtiapp2_model.password):
-                request.session['user'] = cbtiapp2_model.id
-                # Redirect
-                return redirect('/')
+            if check_password(password, c.fetchone()[0]):
+                res_data['rtnCode'] = 200
+                res_data['rtnMsg'] = '로그인 성공'
             else:
-                res_data['error'] = "비밀번호가 틀렸습니다."
+                res_data['rtnCode'] = 501
+                res_data['rtnMsg'] = '패스워드가 일치하지 않습니다'
+        except:
+            res_data['rtnCode'] = 500
+            res_data['rtnMsg'] = '기타 오류'
+        return JsonResponse(res_data)
 
-        return render(request, 'login.html', res_data)
+
+@csrf_exempt
+def id_check(request):
+    if request.method == 'GET':
+        print('nothing')
+    elif request.method == 'POST':
+        data = json.loads(request.body)
+        id = data['id']
+        res_data = {}
+        query = f'SELECT * FROM TB_CBTI_USER WHERE ID = \'{id}\''
+        try:
+            c.execute(query)
+            sql_data = c.fetchall()
+            if len(sql_data) == 0:
+                res_data['rtnCode'] = 200
+                res_data['rtnMsg'] = '가입 가능한 ID'
+            else:
+                res_data['rtnCode'] = 502
+                res_data['rtnMsg'] = '이미 존재하는 아이디입니다'
+        except:
+            res_data['rtnCode'] = 500
+            res_data['rtnMsg'] = '기타 오류'
+        return JsonResponse(res_data)
+
+
+@csrf_exempt
+def nickname_check(request):
+    if request.method == 'GET':
+        print('nothing')
+    elif request.method == 'POST':
+        data = json.loads(request.body)
+        nickname = data['nickname']
+        res_data = {}
+        query = f'SELECT * FROM TB_CBTI_USER WHERE NICKNAME = \'{nickname}\''
+        try:
+            c.execute(query)
+            sql_data = c.fetchall()
+            if len(sql_data) == 0:
+                res_data['rtnCode'] = 200
+                res_data['rtnMsg'] = '사용가능한 닉네임입니다'
+            else:
+                res_data['rtnCode'] = 502
+                res_data['rtnMsg'] = '이미 존재하는 닉네임입니다'
+        except:
+            res_data['rtnCode'] = 500
+            res_data['rtnMsg'] = '기타 오류'
+        return JsonResponse(res_data)
 
 
 def home(request):
