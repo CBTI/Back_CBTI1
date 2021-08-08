@@ -32,7 +32,7 @@ def register(request):
         # 회원가입 처리
         data = json.loads(request.body)
         id = data['id']
-        password = data['password']
+        password = make_password(data['password'])
         name = data['name']
         nickname = data['nickname']
         phone = data['phone']
