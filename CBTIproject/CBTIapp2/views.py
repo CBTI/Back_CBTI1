@@ -106,13 +106,13 @@ def login(request):
             c.execute(query)
             # password가 맞는지 확인
             if check_password(password, c.fetchone()[0]):
-                res_data['rtnCode'] = 200
+                res_data['rtnCode'] = '200'
                 res_data['rtnMsg'] = '로그인 성공'
             else:
-                res_data['rtnCode'] = 501
+                res_data['rtnCode'] = '501'
                 res_data['rtnMsg'] = '패스워드가 일치하지 않습니다'
         except:
-            res_data['rtnCode'] = 500
+            res_data['rtnCode'] = '500'
             res_data['rtnMsg'] = '기타 오류'
         return JsonResponse(res_data)
 
@@ -130,13 +130,13 @@ def id_check(request):
             c.execute(query)
             sql_data = c.fetchall()
             if len(sql_data) == 0:
-                res_data['rtnCode'] = 200
+                res_data['rtnCode'] = '200'
                 res_data['rtnMsg'] = '가입 가능한 ID'
             else:
-                res_data['rtnCode'] = 502
+                res_data['rtnCode'] = '502'
                 res_data['rtnMsg'] = '이미 존재하는 아이디입니다'
         except:
-            res_data['rtnCode'] = 500
+            res_data['rtnCode'] = '500'
             res_data['rtnMsg'] = '기타 오류'
         return JsonResponse(res_data)
 
@@ -154,13 +154,13 @@ def nickname_check(request):
             c.execute(query)
             sql_data = c.fetchall()
             if len(sql_data) == 0:
-                res_data['rtnCode'] = 200
+                res_data['rtnCode'] = '200'
                 res_data['rtnMsg'] = '사용가능한 닉네임입니다'
             else:
-                res_data['rtnCode'] = 502
+                res_data['rtnCode'] = '502'
                 res_data['rtnMsg'] = '이미 존재하는 닉네임입니다'
         except:
-            res_data['rtnCode'] = 500
+            res_data['rtnCode'] = '500'
             res_data['rtnMsg'] = '기타 오류'
         return JsonResponse(res_data)
 
